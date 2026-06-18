@@ -2,18 +2,16 @@ use std::env;
 use std::process;
 
 mod config;
+mod errors;
 mod search;
 use crate::config::config::Config;
-
-const ERR_INVALID_ARGS: i32 = 1;
-const ERR_READING_FILE: i32 = 2;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
 
     let config = Config::build(&args).unwrap_or_else(|err| {
         eprintln!("Problem parsing arguments: {}", err);
-        process::exit(ERR_INVALID_ARGS);
+        process::exit(errors::ERR_INVALID_ARGS);
     });
 
     println!("Matching for '{}'", config.pattern);
@@ -24,6 +22,6 @@ fn main() {
             "Problem parsing config and/or reading the config: {}",
             read_error
         );
-        process::exit(ERR_READING_FILE);
+        process::exit(errors::ERR_READING_FILE);
     }
 }
