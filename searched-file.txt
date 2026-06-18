@@ -1,0 +1,10 @@
+Welcome to my supergrep tool
+
+This is just a small tool that I wrote while learning Rust, that is all.
+
+Enjoy searching for the following patterns:
+
+Great Scott!. Doh! Luke, I am your father!
+Ah Del monte, enjoy your beans old man, for they shall be your last.
+
+This is the end of file
