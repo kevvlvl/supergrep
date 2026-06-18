@@ -2,6 +2,8 @@
 
 I created this simple grep command to learn the rust language.
 
+This was also my first experience using [zed](https://zed.dev/).
+
 ## How to run
 
 ```shell
