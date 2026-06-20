@@ -62,3 +62,93 @@ fn extract_ctx(line: &str, pattern: &str) -> Option<String> {
         before_str, left_pad, pattern, right_pad, after_str
     ))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_extract_ctx_pattern_in_middle_of_line() {
+        let line = "This is a test line with a pattern in the middle.";
+        let pattern = "pattern";
+        let expected = "line with a [pattern] in the middle.";
+        assert_eq!(extract_ctx(line, pattern).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_extract_ctx_pattern_at_start_of_line() {
+        let line = "pattern is at the start of the line.";
+        let pattern = "pattern";
+        let expected = "[pattern] is at the";
+        assert_eq!(extract_ctx(line, pattern).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_extract_ctx_pattern_at_end_of_line() {
+        let line = "The pattern is at the end of the pattern";
+        let pattern = "pattern";
+        let expected = "The [pattern] is at the";
+        assert_eq!(extract_ctx(line, pattern).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_extract_ctx_no_whitespace_around_pattern() {
+        let line = "Thisisapatternhere";
+        let pattern = "pattern";
+        let expected = "Thisisa[pattern]here";
+        assert_eq!(extract_ctx(line, pattern).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_extract_ctx_line_shorter_than_context() {
+        let line = "pattern";
+        let pattern = "pattern";
+        let expected = "[pattern]";
+        assert_eq!(extract_ctx(line, pattern).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_extract_ctx_multiple_patterns_first_match() {
+        let line = "pattern one and pattern two";
+        let pattern = "pattern";
+        let expected = "[pattern] one and pattern";
+        assert_eq!(extract_ctx(line, pattern).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_extract_ctx_pattern_with_special_characters() {
+        let line = "This has a p@tt3rn! in it.";
+        let pattern = "p@tt3rn!";
+        let expected = "This has a [p@tt3rn!] in it.";
+        assert_eq!(extract_ctx(line, pattern).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_extract_ctx_empty_line_no_pattern() {
+        let line = "";
+        let pattern = "pattern";
+        assert!(extract_ctx(line, pattern).is_none());
+    }
+
+    #[test]
+    fn test_extract_ctx_pattern_not_found() {
+        let line = "This line does not contain the word.";
+        let pattern = "missing";
+        assert!(extract_ctx(line, pattern).is_none());
+    }
+
+    #[test]
+    fn test_extract_ctx_long_line_with_pattern() {
+        let line = "This is a very long line with many words before the target pattern that should be truncated to only a few words and also many words after the pattern which should also be truncated to a few words.";
+        let pattern = "pattern";
+        let expected = "before the target [pattern] that should be";
+        assert_eq!(extract_ctx(line, pattern).unwrap(), expected);
+    }
+
+    #[test]
+    fn test_extract_ctx_empty_pattern() {
+        let line = "some text";
+        let pattern = "";
+        assert!(extract_ctx(line, pattern).is_some());
+    }
+}
