@@ -1,7 +1,17 @@
 use crate::config::config::Config;
+use crate::errors;
 use std::error::Error;
 use std::fs::File;
+use std::fs::metadata;
 use std::io::{BufRead, BufReader};
+use std::process;
+
+pub fn file_exists(file_path: &str) {
+    if metadata(file_path).is_err() {
+        eprintln!("Error: File '{}' not found.", file_path);
+        process::exit(errors::ERR_FILE_NOT_FOUND);
+    }
+}
 
 pub fn read(config: Config) -> Result<(), Box<dyn Error>> {
     let file = File::open(&config.file_to_parse)?;

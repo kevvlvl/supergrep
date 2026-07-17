@@ -14,6 +14,8 @@ fn main() {
         process::exit(errors::ERR_INVALID_ARGS);
     });
 
+    search::file_exists(&config.file_to_parse);
+
     println!("Matching for '{}'", config.pattern);
     println!("File to search: '{}'", config.file_to_parse);
 
